@@ -1,0 +1,50 @@
+---
+- hosts: imagersite
+  remote_user: ubuntu
+  environment:
+    SECRET_KEY: "{{ SECRET_KEY }}"
+    DB_NAME: "{{ DB_NAME }}"
+    DB_HOST: "{{ DB_HOST }}"
+    DB_USER: "{{ DB_USER }}"
+    DB_PASSWORD: "{{ DB_PASSWORD }}"
+    ALLOWED_HOSTS: "{{ ALLOWED_HOSTS }}"
+    DJANGO_SETTINGS_MODULE: "{{ DJANGO_SETTINGS_MODULE }}"
+    EMAIL_HOST: "{{ EMAIL_HOST }}"
+    EMAIL_PORT: "{{ EMAIL_PORT }}"
+    EMAIL_HOST_USER: "{{ EMAIL_HOST_USER }}"
+    EMAIL_HOST_PASSWORD: "{{ EMAIL_HOST_PASSWORD }}"
+    EMAIL_USE_TLS: "{{ EMAIL_USE_TLS }}"
+
+  tasks:
+    - name: Update the base Ubutu image
+      apt: update_cache=yes
+      become: yes
+      become_method: sudo
+
+    - name: Install build dependencies
+      apt: name={{ item }} state=latest update_cache=yes
+      become: yes
+      become_method: sudo
+      with_items:
+        - python-dev
+        - python3-venv
+        - python3-pip
+        - build-essential
+        - postgresql-client
+        - nginx
+
+    - name: Clone project
+      git:
+        repo: https://github.com/captain-c00keys/django-imager.git
+        dest: /home/ubuntu/django-imager
+        version: master
+
+    - name: Install project requirements
+      command: pip install -r django-imager/requirements.txt
+      become: yes
+      become_method: sudo
+
+    - name: Install Gunicorn into Virtual Environment
+      pip: name=gunicorn
+      become: yes
+      become_method: sudo
