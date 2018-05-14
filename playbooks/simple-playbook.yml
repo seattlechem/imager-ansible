@@ -44,7 +44,7 @@
       become: yes
       become_method: sudo
 
-    - name: Install Gunicorn into Virtual Environment
+    - name: Install Gunicorn into ENV
       pip: name=gunicorn
       become: yes
       become_method: sudo
