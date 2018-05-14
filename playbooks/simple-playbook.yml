@@ -1,5 +1,5 @@
 ---
-- hosts: imagersite
+- hosts: us-west-2
   remote_user: ubuntu
   environment:
     SECRET_KEY: "{{ SECRET_KEY }}"
@@ -40,7 +40,7 @@
         version: master
 
     - name: Install project requirements
-      command: pip install -r django-imager/requirements.txt
+      command: pip3 install -r django-imager/requirements.txt
       become: yes
       become_method: sudo
 
