@@ -49,15 +49,19 @@
       become: yes
       become_method: sudo
 
-        - name: register the old default file
-      stat: path=/etc/nginx/sites-available/default.old
+    - name: Register the backup default config for nginx
+      stat: path=/etc/nginx/sites-available/default.bak
       register: default_stat
 
-    - name: rename old default
-      command: mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.old
+    - name: mv and rename default nginx config
+      command: mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+      become: yes
+      become_method: sudo
       when: not default_stat.stat.exists
 
-    - name: create new nginx default file
+    - name: Create a new Nginx config
       template:
-        src: nginx_default
+        src: templates/nginx_config
         dest: /etc/nginx/sites-available/default
+      become: yes
+      become_method: sudo
