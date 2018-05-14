@@ -48,3 +48,16 @@
       pip: name=gunicorn
       become: yes
       become_method: sudo
+
+        - name: register the old default file
+      stat: path=/etc/nginx/sites-available/default.old
+      register: default_stat
+
+    - name: rename old default
+      command: mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.old
+      when: not default_stat.stat.exists
+
+    - name: create new nginx default file
+      template:
+        src: nginx_default
+        dest: /etc/nginx/sites-available/default
