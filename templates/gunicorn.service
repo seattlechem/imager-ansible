@@ -20,7 +20,7 @@ Environment="EMAIL_USE_TLS={{ email_use_tls }}"
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/django-imager/imagersite
-ExecStart=/usr/bin/gunicorn --bind 0.0.0.0:8000 imagersite.wsgi
+ExecStart=/usr/bin/gunicorn -w 3 --bind 0.0.0.0:8000 imagersite.wsgi
 
 
 [Install]
